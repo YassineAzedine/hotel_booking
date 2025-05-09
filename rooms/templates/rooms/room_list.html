@@ -6,6 +6,7 @@
 
     <!-- Formulaire de filtres -->
     <form method="GET" class="mb-4">
+      {% csrf_token %}
         <div class="row mb-3 g-3 ">
             <!-- Filtre par hôtel -->
             <div class="col-md-3">
