@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Liste des Chambres</h2>
+
+    <!-- Formulaire de filtres -->
+    <form method="GET" class="mb-4">
+        <div class="row mb-3 g-3 ">
+            <!-- Filtre par hôtel -->
+            <div class="col-md-3">
+                <select name="hotel" class="form-select">
+                    <option value="">-- Tous les hôtels --</option>
+                    {% for hotel in hotels %}
+                        <option value="{{ hotel.id }}" {% if filters.hotel == hotel.id|stringformat:"s" %}selected{% endif %}>
+                            {{ hotel.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Filtre par type de chambre -->
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="">-- Type de chambre --</option>
+                    <option value="normal" {% if filters.type == 'single' %}selected{% endif %}>Simple</option>
+                    <option value="double" {% if filters.type == 'double' %}selected{% endif %}>Double</option>
+                </select>
+            </div>
+
+            <!-- Filtre par disponibilité -->
+            <div class="col-md-3">
+                <select name="available" class="form-select">
+                    <option value="">-- Disponibilité --</option>
+                    <option value="1" {% if filters.available == 'true' %}selected{% endif %}>Disponible</option>
+                    <option value="0" {% if filters.available == 'false' %}selected{% endif %}>Indisponible</option>
+                </select>
+            </div>
+
+            <!-- Filtre par prix maximum -->
+            <div class="col-md-3">
+              <label for="max_price" class="form-label" style="font-size: 1.1rem; font-weight: 600;">Prix maximum</label>
+              <input type="range" id="max_price" name="max_price" class="form-range" min="0" max="1000" step="10" value="{{ filters.max_price|default:1000 }}" 
+                  style="width: 100%; margin-top: 10px; margin-bottom: 10px; height: 6px; border-radius: 10px; background: #d3d3d3; outline: none; transition: all 0.3s ease;">
+              <div class="d-flex justify-content-between">
+                  <span id="max_price_value" style="font-weight: bold; color: #007bff; font-size: 1.2rem; align-self: center;">{{ filters.max_price|default:1000 }}</span> €
+              </div>
+          </div>
+          
+        </div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-primary btn-lg shadow-sm" style="padding: 10px 20px; font-size: 16px; border-radius: 8px; transition: all 0.3s ease;">
+            <i class="bi bi-funnel-fill"></i> Filtrer
+        </button>
+    </div>
+</div>
+    </form>
+
+    <!-- Liste des chambres -->
+    <div class="row">
+        {% for room in rooms %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                  <img src="{{ room.cover.url }}" class="card-img-top object-fit-cover" alt="{{ room.room_type }}" style="height: 200px; width: 100%;">
+                    <div class="card-body">
+            <p class="text-muted badge bg-secondary">{{ room.hotel.name }} - {{ room.hotel.location }}</p>
+
+                        <h5 class="card-title">{{ room.room_type|capfirst }}</h5>
+                        <p class="card-text">Prix: {{ room.price }} €</p>
+                        <p class="card-text">
+                            {% if room.available %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                                <span class="badge bg-danger">Indisponible</span>
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'room_detail' room.id %}" class="btn btn-primary">Voir Détails</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">Aucune chambre ne correspond à vos critères.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+<script>
+  // Cibler l'élément input range et l'élément span pour afficher la valeur
+  const maxPriceInput = document.getElementById("max_price");
+  const maxPriceValue = document.getElementById("max_price_value");
+
+  // Fonction pour mettre à jour la valeur du span en temps réel
+  maxPriceInput.addEventListener("input", function() {
+      maxPriceValue.textContent = maxPriceInput.value; // Met à jour la valeur dans le span
+  });
+
+  // Initialiser la valeur au cas où la page se charge avec un filtre sélectionné
+  maxPriceValue.textContent = maxPriceInput.value;
+</script>

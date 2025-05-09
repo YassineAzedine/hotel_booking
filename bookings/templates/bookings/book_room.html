@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5 border-0 shadow-sm p-4 rounded ">
+    <h2>Réserver la chambre : {{ room.room_type }}</h2>
+    <p><strong>Hôtel :</strong> {{ room.hotel.name }}</p>
+    <p><strong>Prix :</strong> {{ room.price }} € / nuit</p>
+    <p><strong>Description :</strong> {{ room.description }}</p>
+
+    <!-- Image de la chambre si disponible -->
+    <div class="my-4">
+        {% if room.images.all %}
+            <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in room.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="Image de la chambre" width="400" height="250">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
+        {% else %}
+            <p>Aucune image disponible pour cette chambre.</p>
+        {% endif %}
+    </div>
+
+    <!-- Formulaire de réservation -->
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+      <div class="form-group">
+          <label for="check_in">Date d'arrivée</label>
+          <input type="date" id="check_in" name="check_in" class="form-control" required>
+      </div>
+  
+      <div class="form-group mt-3">
+          <label for="check_out">Date de départ</label>
+          <input type="date" id="check_out" name="check_out" class="form-control" required>
+      </div>
+  
+      <div class="form-group mt-3">
+          <label for="guests">Nombre de personnes</label>
+          <input type="number" id="guests" name="guests" class="form-control" min="1" max="{{ room.max_occupancy }}" required>
+      </div>
+
+  
+      <button type="submit" class="btn btn-primary mt-4">Confirmer la réservation</button>
+  </form>
+  
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,75 @@
+<!-- templates/rooms/room_detail.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ room.room_type }} - {{ room.hotel.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">    
+  <div class="row">
+    <div class="col-md-6">
+      <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Indicateurs avec miniatures -->
+        <div class="carousel-indicators">
+          {% for image in room.images.all %}
+            <button type="button" data-bs-target="#roomCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                    class="{% if forloop.first %}active{% endif %}" aria-current="true"
+                    aria-label="Image {{ forloop.counter }}">
+            </button>
+          {% endfor %}
+        </div>
+      
+        <!-- Images -->
+        <div class="carousel-inner rounded shadow-sm">
+          {% for image in room.images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img src="{{ image.image.url }}" class="d-block w-100" alt="Chambre {{ room.room_type }} - Image {{ forloop.counter }}" loading="lazy" style="object-fit: cover; height: 400px;">
+            </div>
+          {% endfor %}
+        </div>
+      
+        <!-- Contrôles -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Suivant</span>
+        </button>
+      </div>
+      
+          
+          
+    </div>
+
+    <div class="col-md-6">
+      <h2>{{ room.room_type }}</h2>
+      <p class="text-muted">{{ room.hotel.name }} - {{ room.hotel.location }}</p>
+      <p>{{ room.description }}</p>
+      <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>Price:</strong> ${{ room.price }} / night</li>
+        <li class="list-group-item"><strong>Max Occupancy:</strong> {{ room.max_occupancy }} guests</li>
+        <li class="list-group-item">
+          <strong>Status:</strong>
+          {% if room.available == 1 %}
+            <span class="badge bg-success">Available</span>
+          {% else %}
+            <span class="badge bg-danger">Not Available</span>
+          {% endif %}
+        </li>
+      </ul>
+      {%if room.available == 1 %}
+      <a href="{% url 'book_room' room.id %}" class="btn btn-primary">Book Now</a>
+
+      {% else %}
+        <p class="text-danger">This room is not available for booking.</p>
+      {% endif %}
+     
+      <a href="{% url 'hotel_detail' room.hotel.id %}" class="btn btn-outline-secondary">Back to Hotel</a>
+  
+    </div>
+  </div>
+ 
+{% endblock %}
+
+

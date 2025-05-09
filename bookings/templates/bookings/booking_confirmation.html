@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de réservation</title>
+    <!-- Ajouter le lien vers Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5 bg-light p-4 rounded shadow">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">Confirmation de votre réservation</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Détails de la réservation</h5>
+                        <ul class="list-group list-group-flush">
+                        
+                            <li class="list-group-item"><strong>Chambre réservée :</strong> {{ booking.room.room_type }}</li>
+                            <li class="list-group-item"><strong>Date d'arrivée :</strong> {{ booking.check_in }}</li>
+                            <li class="list-group-item"><strong>Date de départ :</strong> {{ booking.check_out }}</li>
+                            <li class="list-group-item"><strong>Nombre de nuits :</strong> {{ booking.nights }}</li>
+                            <li class="list-group-item"><strong>Nombre d'invités :</strong> {{ booking.guests }}</li>
+                            <li class="list-group-item"><strong>Prix total :</strong> {{ booking.total_price }} €</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5 class="card-title">Résumé du paiement</h5>
+                    <p><strong>Total à payer :</strong> {{ booking.total_price }} €</p>
+
+                    {% if booking.user.is_authenticated %}
+                        <p>Merci pour votre réservation, {{ booking.user.username }}. Vous pouvez consulter vos réservations dans votre espace personnel.</p>
+                    {% else %}
+                        <p>Merci pour votre réservation. Vous recevrez bientôt un email de confirmation avec les détails.</p>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="{% url 'home' %}" class="btn btn-primary">Retour à l'accueil</a>
+                    <a href="{% url 'booking_list' %}" class="btn btn-secondary">Voir mes réservations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ajouter le lien vers Bootstrap JS et les dépendances -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
