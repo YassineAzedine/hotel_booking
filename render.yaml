@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: hotel-booking
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn hotel_booking.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: hotel_booking.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
